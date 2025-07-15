@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Feedback - Admin</title>
+</head>
+<body>
+    <h1>📝 All Student Feedback</h1>
+    {% if data %}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Day</th>
+            <th>Meal</th>
+            <th>Rating</th>
+            <th>Comment</th>
+        </tr>
+        {% for fb in data %}
+        <tr>
+            <td>{{ fb[1] }}</td>
+            <td>{{ fb[2] }}</td>
+            <td>{{ fb[3] }}</td>
+            <td>{{ fb[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No feedback submitted yet.</p>
+    {% endif %}
+    
+    <br><a href="/admin">← Back to Admin Panel</a>
+</body>
+</html>

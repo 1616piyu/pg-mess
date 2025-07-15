@@ -1,0 +1,45 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f3f3f3;
+  padding: 20px;
+}
+h1 {
+  color: #333;
+}
+.menu {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+}
+a {
+  display: block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: blue;
+}
+table {
+  background: white;
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+label {
+  font-weight: bold;
+}
+
+textarea, select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+}

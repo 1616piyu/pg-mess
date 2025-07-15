@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Update Menu</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>✏️ Admin Panel – Update Menu</h1>
+
+    <form method="POST">
+        <label>Day:</label>
+        <select name="day" required>
+            <option value="">--Select Day--</option>
+            {% for d in ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %}
+            <option value="{{ d }}">{{ d }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label>Meal:</label>
+        <select name="meal" required>
+            <option value="">--Select Meal--</option>
+            <option value="Breakfast">Breakfast</option>
+            <option value="Lunch">Lunch</option>
+            <option value="Dinner">Dinner</option>
+        </select><br><br>
+
+        <label>Food Items:</label><br>
+        <textarea name="food" rows="4" cols="50" required></textarea><br><br>
+
+        <button type="submit">Update Menu</button>
+    </form>
+
+    <br><a href="/">← Back to Home</a>
+</body>
+</html>
