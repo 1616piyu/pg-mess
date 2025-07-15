@@ -107,8 +107,24 @@ def feedback():
 
     return render_template("feedback.html")
 
+@app.route('/view-feedback')
+def view_feedback():
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('login'))
 
+    con = sqlite3.connect(DB)
+    cur = con.cursor()
+    cur.execute("SELECT * FROM feedback ORDER BY id DESC")
+    data = cur.fetchall()
+    con.close()
+    
+    return render_template("view_feedback.html", data=data)
 
 # ------------------ Run Server ------------------
+import os
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
+
+    
