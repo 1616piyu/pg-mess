@@ -4,6 +4,9 @@ import sqlite3
 from datetime import datetime
 import os
 
+# ------------------ Flask Setup ------------------
+app = Flask(__name__)
+app.secret_key = 'mlv_pg_secret'
 DB = 'data.db'
 
 # ------------------ Auto DB Setup ------------------
@@ -12,7 +15,7 @@ def initialize_db():
         con = sqlite3.connect(DB)
         cur = con.cursor()
 
-        # Create tables
+        # Create menu_schedule table
         cur.execute('''
             CREATE TABLE IF NOT EXISTS menu_schedule (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -22,6 +25,7 @@ def initialize_db():
             )
         ''')
 
+        # Create feedback table
         cur.execute('''
             CREATE TABLE IF NOT EXISTS feedback (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -32,28 +36,28 @@ def initialize_db():
             )
         ''')
 
-        # Add sample data if empty
+        # Insert sample menu data
         sample_data = [
             ('Monday', 'Breakfast', 'Poha & Tea'),
             ('Monday', 'Lunch', 'Dal, Rice, Roti'),
             ('Monday', 'Dinner', 'Paneer & Rice'),
             ('Tuesday', 'Breakfast', 'Idli & Sambar'),
             ('Tuesday', 'Lunch', 'Rajma Chawal'),
-            ('Tuesday', 'Dinner', 'Chole Bhature')
+            ('Tuesday', 'Dinner', 'Chole Bhature'),
+            ('Wednesday', 'Breakfast', 'Aloo Paratha & Curd'),
+            ('Wednesday', 'Lunch', 'Kadhi Chawal'),
+            ('Wednesday', 'Dinner', 'Fried Rice & Manchurian')
         ]
         cur.executemany("INSERT INTO menu_schedule (day, meal_type, food_items) VALUES (?, ?, ?)", sample_data)
 
         con.commit()
         con.close()
-        print("✅ Database created with sample menu.")
+        print("✅ Database initialized.")
 
-        app = Flask(__name__)
-app.secret_key = 'mlv_pg_secret'
+# Initialize database before anything else
+initialize_db()
 
-initialize_db()  # 🟢 This line must be here
-
-
-# ------------------ Helper Function ------------------
+# ------------------ Helper ------------------
 def get_today_menu():
     today = datetime.now().strftime('%A')
     con = sqlite3.connect(DB)
@@ -68,13 +72,14 @@ def get_today_menu():
     return menu
 
 # ------------------ Routes ------------------
+
 @app.route('/')
 def home():
     try:
         menu = get_today_menu()
         return render_template("index.html", menu=menu)
     except Exception as e:
-        return f"Error: {e}"
+        return f"Error loading today’s menu: {e}"
 
 @app.route('/weekly')
 def weekly():
@@ -86,7 +91,7 @@ def weekly():
         con.close()
         return render_template("weekly_menu.html", data=data)
     except Exception as e:
-        return f"Error: {e}"
+        return f"Error loading weekly menu: {e}"
 
 @app.route('/api/today')
 def api_today():
@@ -152,7 +157,7 @@ def view_feedback():
     con.close()
     return render_template("view_feedback.html", data=data)
 
-# ------------------ Start Server ------------------
+# ------------------ Run App ------------------
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
