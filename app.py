@@ -4,8 +4,6 @@ import sqlite3
 from datetime import datetime
 import os
 
-app = Flask(__name__)
-app.secret_key = 'mlv_pg_secret'
 DB = 'data.db'
 
 # ------------------ Auto DB Setup ------------------
@@ -49,7 +47,11 @@ def initialize_db():
         con.close()
         print("✅ Database created with sample menu.")
 
-initialize_db()
+        app = Flask(__name__)
+app.secret_key = 'mlv_pg_secret'
+
+initialize_db()  # 🟢 This line must be here
+
 
 # ------------------ Helper Function ------------------
 def get_today_menu():
