@@ -1,12 +1,48 @@
 # app.py
 from flask import Flask, render_template, jsonify, request, redirect, url_for, session
 from flask import Flask, render_template, jsonify, request, redirect, url_for
-import sqlite3
 from datetime import datetime
+import os
+import sqlite3
 
-app = Flask(__name__)  # ✅ Keep default name
-app.secret_key = 'mlv_pg_secret'
 DB = 'data.db'
+
+def initialize_db():
+    if not os.path.exists(DB):
+        con = sqlite3.connect(DB)
+        cur = con.cursor()
+
+        # Create menu_schedule table
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS menu_schedule (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                day TEXT NOT NULL,
+                meal_type TEXT NOT NULL,
+                food_items TEXT NOT NULL
+            )
+        ''')
+
+        # Create feedback table
+        cur.execute('''
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                day TEXT NOT NULL,
+                meal_type TEXT NOT NULL,
+                rating INTEGER,
+                comment TEXT
+            )
+        ''')
+
+        con.commit()
+        con.close()
+        print("✅ Database and tables created.")
+
+
+app = Flask(__name__)
+app.secret_key = 'mlv_pg_secret'
+
+initialize_db()  # Auto create DB and tables if not found
+
 
 # ------------------ Helper Function ------------------
 def get_today_menu():
@@ -121,10 +157,9 @@ def view_feedback():
     return render_template("view_feedback.html", data=data)
 
 # ------------------ Run Server ------------------
-import os
-
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port)
+
 
     
